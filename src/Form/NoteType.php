@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Note;
+use Doctrine\Common\Collections\Placeholder;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\AbstractType;
@@ -14,8 +15,14 @@ class NoteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('text', TextType::class)
-            ->add('save', SubmitType::class, ['label' => 'Сохранить'])
+            ->add('text', TextType::class, [
+                'label' => 'Текст заметки',
+                'attr' => ['placeholder' => 'Напишите текст заметки тут'],
+                ])
+            ->add('save', SubmitType::class, [
+                'label' => 'Сохранить',
+                'attr' => ['class' => 'btn btn-primary w-100',
+                ],])
         ;
     }
 

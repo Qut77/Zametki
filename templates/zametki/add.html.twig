@@ -3,8 +3,10 @@
 {% block title %}Zametki - добавление записи{% endblock %}
 
 {% block body %}
-<h1>Сервис онлайн записей</h1>
-<h2>{{ h2 }}</h2>
-{{ form(form) }}
-<a href="{{ path('appNote') }}" class="btn btn-danger">Назад</a>
+<h2 class="h2">{{ h2 }}</h2>
+
+<div class="d-grid gap-2 col-3 mx-auto">
+    {{ form(form) }}
+    <a href="{{ path('appNote') }}" class="btn btn-danger">Назад</a>
+</div>
 {% endblock %}

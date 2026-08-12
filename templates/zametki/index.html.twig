@@ -3,16 +3,29 @@
 {% block title %}Zametki - онлайн записи{% endblock %}
 
 {% block body %}
-<h1>Сервис онлайн записей</h1>
+<table class="table table-bordered text-center">
+    <thead>
+        <tr>
+            <th csope="col">Text</th>
+            <th csope="col">Date</th>
+            <th csope="col">Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for note in notes %}
+            <tr>
+                <th>{{ note.text }}</th>
+                <th>{{ note.createdAt|date('d.m.Y H:i') }}</th>
+                <th class="d-flex justify-content-around">
+                    <a href="{{ path('updNote', {'id': note.id}) }}" class="btn btn-info">Изменить</a>
+                    <form action="{{ path('delNote', {'id': note.id}) }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ note.id) }}">
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </form>
+                </th>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 <a href="{{ path('addNote') }}" class="btn btn-primary">Добавить запись</a>
-{% for note in notes %}
-    <p>{{ note.text }}</p>
-    <p>{{ note.createdAt|date('d.m.Y H:i') }}</p>
-    <a href="{{ path('updNote', {'id': note.id}) }}" class="btn btn-info">Изменить</a>
-    <form action="{{ path('delNote', {'id': note.id}) }}" method="post">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ note.id) }}">
-        <button type="submit" class="btn btn-danger">Удалить</button>
-    </form>     
-{% endfor %}
-
 {% endblock %}
