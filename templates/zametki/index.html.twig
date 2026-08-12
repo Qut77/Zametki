@@ -4,10 +4,11 @@
 
 {% block body %}
 <h1>Сервис онлайн записей</h1>
-<a href="{{ path('add_zametka') }}" class="btn btn-primary">Добавить запись</a>
+<a href="{{ path('addNote') }}" class="btn btn-primary">Добавить запись</a>
 {% for note in notes %}
     <p>{{ note.text }}</p>
     <p>{{ note.createdAt|date('d.m.Y H:i') }}</p>
+    <a href="{{ path('updNote', {'id': note.id}) }}" class="btn btn-info">Изменить запись</a>
 {% endfor %}
 
 {% endblock %}

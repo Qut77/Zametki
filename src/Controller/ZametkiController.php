@@ -12,8 +12,8 @@ use App\Form\NoteType;
 
 final class ZametkiController extends AbstractController
 {
-    #[Route('/', name: 'app_zametki')]
-    public function index(EntityManagerInterface $em): Response
+    #[Route('/', name: 'appNote')]
+    public function show(EntityManagerInterface $em): Response
     {
         $notes = $em->getRepository(Note::class)->findAll();
         return $this->render('zametki/index.html.twig', [
@@ -21,8 +21,8 @@ final class ZametkiController extends AbstractController
         ]);
     }
 
-        #[Route('/add', name: 'add_zametka')]
-    public function addZam(Request $request, EntityManagerInterface $em): Response
+    #[Route('/add', name: 'addNote')]
+    public function addNote(Request $request, EntityManagerInterface $em): Response
     {
         $note = new Note();
         $form = $this->createForm(NoteType::class, $note);
@@ -34,11 +34,28 @@ final class ZametkiController extends AbstractController
             $em->persist($note);
             $em->flush();
 
-            return $this->redirectToRoute('app_zametki');
+            return $this->redirectToRoute('appNote');
         }
 
         return $this->render('zametki/add.html.twig', [
             'form' => $form->createView(),
+            'h2' => 'Добавление',
+        ]);
+    }
+    #[Route('/update/{id}', name: 'updNote')]
+    public function updNote(Request $request, EntityManagerInterface $em, Note $note): Response
+    {
+        $form = $this->createForm(NoteType::class, $note);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $em->flush();
+            return $this->redirectToRoute('appNote');
+        }
+
+        return $this->render('zametki/add.html.twig', [
+            'form' => $form->createView(),
+            'h2' => 'Изменение',
         ]);
     }
 }
