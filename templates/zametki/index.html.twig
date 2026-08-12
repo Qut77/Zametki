@@ -8,7 +8,11 @@
 {% for note in notes %}
     <p>{{ note.text }}</p>
     <p>{{ note.createdAt|date('d.m.Y H:i') }}</p>
-    <a href="{{ path('updNote', {'id': note.id}) }}" class="btn btn-info">Изменить запись</a>
+    <a href="{{ path('updNote', {'id': note.id}) }}" class="btn btn-info">Изменить</a>
+    <form action="{{ path('delNote', {'id': note.id}) }}" method="post">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ note.id) }}">
+        <button type="submit" class="btn btn-danger">Удалить</button>
+    </form>     
 {% endfor %}
 
 {% endblock %}

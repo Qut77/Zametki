@@ -58,4 +58,15 @@ final class ZametkiController extends AbstractController
             'h2' => 'Изменение',
         ]);
     }
+
+        #[Route('/delete/{id}', name: 'delNote', methods: ['POST'])]
+    public function delNote(Request $request, EntityManagerInterface $em, Note $note): Response
+    {
+        if (!$this->isCsrfTokenValid('delete' . $note->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Неверный токен');
+        }
+        $em->remove($note);
+        $em->flush();
+        return $this->redirectToRoute('appNote');
+    }
 }
