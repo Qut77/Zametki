@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zametki - добавление записи{% endblock %}
+
+{% block body %}
+<h1>Сервис онлайн записей</h1>
+{{ form(form) }}
+<a href="{{ path('app_zametki') }}" class="btn btn-danger">Назад</a>
+{% endblock %}

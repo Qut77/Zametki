@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zametki - онлайн записи{% endblock %}
+
+{% block body %}
+<h1>Сервис онлайн записей</h1>
+<a href="{{ path('add_zametka') }}" class="btn btn-primary">Добавить запись</a>
+{% for note in notes %}
+    <p>{{ note.text }}</p>
+    <p>{{ note.createdAt|date('d.m.Y H:i') }}</p>
+{% endfor %}
+
+{% endblock %}
