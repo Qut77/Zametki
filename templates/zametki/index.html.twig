@@ -12,20 +12,23 @@
         </tr>
     </thead>
     <tbody>
-        {% for note in notes %}
+        {% for note in pagination %}
             <tr>
-                <th>{{ note.text }}</th>
-                <th>{{ note.createdAt|date('d.m.Y H:i') }}</th>
-                <th class="d-flex justify-content-around">
+                <td>{{ note.text }}</td>
+                <td>{{ note.createdAt|date('d.m.Y H:i') }}</td>
+                <td class="d-flex justify-content-around">
                     <a href="{{ path('updNote', {'id': note.id}) }}" class="btn btn-info">Изменить</a>
                     <form action="{{ path('delNote', {'id': note.id}) }}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ note.id) }}">
                         <button type="submit" class="btn btn-danger">Удалить</button>
                     </form>
-                </th>
+                </td>
             </tr>
         {% endfor %}
     </tbody>
 </table>
+<div class="navigation">
+    {{ knp_pagination_render(pagination) }}
+</div>
 <a href="{{ path('addNote') }}" class="btn btn-primary">Добавить запись</a>
 {% endblock %}

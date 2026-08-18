@@ -8,17 +8,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use App\Entity\Note;
 use App\Form\NoteType;
+use App\Repository\NoteRepository;
 
 final class ZametkiController extends AbstractController
 {
     #[Route('/', name: 'appNote')]
-    public function show(EntityManagerInterface $em, Security $security): Response
+    public function show(Request $request, Security $security, PaginatorInterface $paginator, NoteRepository $noteRepository): Response
     {
-        $notes = $em->getRepository(Note::class)->findBy(['user' => $security->getUser()]);
+        $query = $noteRepository->findByUserQuery($security->getUser());
+            $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            3
+        );
         return $this->render('zametki/index.html.twig', [
-            'notes' => $notes,
+            'pagination' => $pagination,
         ]);
     }
 
