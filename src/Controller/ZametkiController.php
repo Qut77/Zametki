@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,16 +14,16 @@ use App\Form\NoteType;
 final class ZametkiController extends AbstractController
 {
     #[Route('/', name: 'appNote')]
-    public function show(EntityManagerInterface $em): Response
+    public function show(EntityManagerInterface $em, Security $security): Response
     {
-        $notes = $em->getRepository(Note::class)->findAll();
+        $notes = $em->getRepository(Note::class)->findBy(['user' => $security->getUser()]);
         return $this->render('zametki/index.html.twig', [
             'notes' => $notes,
         ]);
     }
 
     #[Route('/add', name: 'addNote')]
-    public function addNote(Request $request, EntityManagerInterface $em): Response
+    public function addNote(Request $request, EntityManagerInterface $em, Security $security): Response
     {
         $note = new Note();
         $form = $this->createForm(NoteType::class, $note);
@@ -30,7 +31,8 @@ final class ZametkiController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
             $note->setCreatedAt(new \DateTimeImmutable());
-            
+            $note->setUser($security->getUser());
+
             $em->persist($note);
             $em->flush();
 
@@ -43,11 +45,13 @@ final class ZametkiController extends AbstractController
         ]);
     }
     #[Route('/update/{id}', name: 'updNote')]
-    public function updNote(Request $request, EntityManagerInterface $em, Note $note): Response
+    public function updNote(Request $request, EntityManagerInterface $em, Note $note, Security $security): Response
     {
+        if ($note->getUser() !== $security->getUser()) {
+            throw $this->createAccessDeniedException('Это не ваша заметка');
+        }
         $form = $this->createForm(NoteType::class, $note);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()){
             $em->flush();
             return $this->redirectToRoute('appNote');
@@ -60,8 +64,11 @@ final class ZametkiController extends AbstractController
     }
 
         #[Route('/delete/{id}', name: 'delNote', methods: ['POST'])]
-    public function delNote(Request $request, EntityManagerInterface $em, Note $note): Response
+    public function delNote(Request $request, EntityManagerInterface $em, Note $note, Security $security): Response
     {
+        if ($note->getUser() !== $security->getUser()) {
+            throw $this->createAccessDeniedException('Это не ваша заметка');
+        }
         if (!$this->isCsrfTokenValid('delete' . $note->getId(), $request->request->get('_token'))) {
             throw $this->createAccessDeniedException('Неверный токен');
         }
