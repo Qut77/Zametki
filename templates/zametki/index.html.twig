@@ -8,6 +8,7 @@
         <tr>
             <th csope="col">Text</th>
             <th csope="col">Date</th>
+            <th csope="col">Tags</th>
             <th csope="col">Options</th>
         </tr>
     </thead>
@@ -16,6 +17,7 @@
             <tr>
                 <td>{{ note.text }}</td>
                 <td>{{ note.createdAt|date('d.m.Y H:i') }}</td>
+                <td>{{ note.tags|join(', ') }}</td>
                 <td class="d-flex justify-content-around">
                     <a href="{{ path('updNote', {'id': note.id}) }}" class="btn btn-info">Изменить</a>
                     <form action="{{ path('delNote', {'id': note.id}) }}" method="post">

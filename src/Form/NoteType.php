@@ -3,7 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Note;
-use Doctrine\Common\Collections\Placeholder;
+use App\Entity\Tag; // Обязательно импортируем сущность Tag
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\AbstractType;
@@ -18,11 +19,20 @@ class NoteType extends AbstractType
             ->add('text', TextType::class, [
                 'label' => 'Текст заметки',
                 'attr' => ['placeholder' => 'Напишите текст заметки тут'],
-                ])
+            ])
+            ->add('tags', EntityType::class, [
+                'class' => Tag::class,     // Исправлено: передаем класс через ::class
+                'choice_label' => 'name',  // Исправлена опечатка (choice_label вместо choise_label)
+                'multiple' => true,        // Исправлено: булево значение вместо строки
+                'expanded' => true,        // Исправлено: булево значение вместо строки
+                'required' => false,       // Исправлено: булево значение вместо строки
+            ])
             ->add('save', SubmitType::class, [
                 'label' => 'Сохранить',
-                'attr' => ['class' => 'btn btn-primary w-100',
-                ],])
+                'attr' => [
+                    'class' => 'btn btn-primary w-100',
+                ],
+            ])
         ;
     }
 
